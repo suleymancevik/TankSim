@@ -4,6 +4,7 @@
 // 21 => 40022 OutletValveCmd (0..100, written by vPLC)
 // (Optional) Input Register for status:
 // IR 0 => 30001 Status: 1=OK, 2=>90% high, 3=Broken (>100%)
+// Intentionally described fix values for inlet and otlet in case emergency (like emergncy stop) (iv-->0 ov-->99)
 
 import ModbusRTU from "modbus-serial";
 
@@ -23,7 +24,7 @@ let level = 50; // 0..100 (%), integer for simplicity
 let inletCmd = 0; // 0..100 (written by vPLC)
 let outletCmd = 0; // 0..100 (written by vPLC)
 const fixOutletCmd = 99; // for the peace of galaxy
-const fixInletCmd = 0;
+const fixInletCmd = 0; // for the peace of galaxy..
 let status = 1; // 1=OK, 2=>90% high, 3=Broken
 let broken = false; // if true, tank is broken and level stops updating
 
@@ -95,7 +96,7 @@ const vector = {
     }
   },
 
-  // Coils/Discrete Inputs not used in the minimal spec
+  // Coils/Discrete Inputs not used in the minimal spec. **It can be added later**
   getCoil: () => 0,
   setCoil: () => {},
   getDiscreteInput: () => 0,
