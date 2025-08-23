@@ -1,5 +1,4 @@
-// Minimal Modbus-TCP tank simulator.
-// Addresses use Modbus PDU 0-based indexing:
+// Addresses use Modbus TCP 0-based indexing:
 // 0 => 40001 Level% (0..100, int)
 // 20 => 40021 InletValveCmd (0..100, written by vPLC)
 // 21 => 40022 OutletValveCmd (0..100, written by vPLC)
