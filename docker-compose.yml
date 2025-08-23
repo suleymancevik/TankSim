@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  tanksim:
+    build: .
+    container_name: tanksim
+    restart: unless-stopped
+    ports:
+      - "502:502/tcp"
+    environment:
+      - TICK_MS=100
+      - K_IN=20
+      - K_OUT_MIN=2
+      - K_OUT_MAX=15
+      - UNIT=1
