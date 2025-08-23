@@ -22,6 +22,8 @@ const UNIT = parseInt(process.env.UNIT || "1", 10);
 let level = 50; // 0..100 (%), integer for simplicity
 let inletCmd = 0; // 0..100 (written by vPLC)
 let outletCmd = 0; // 0..100 (written by vPLC)
+const fixOutletCmd = 99; // for the peace of galaxy
+const fixInletCmd = 0;
 let status = 1; // 1=OK, 2=>90% high, 3=Broken
 let broken = false; // if true, tank is broken and level stops updating
 
@@ -46,6 +48,8 @@ function step(dtSec) {
     level = 100;
   } else if (level > 90) {
     status = 2;
+    inletCmd = fixInletCmd;
+    outletCmd = fixOutletCmd;
   } else {
     status = 1;
   }
