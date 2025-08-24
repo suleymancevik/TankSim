@@ -1,0 +1,169 @@
+<project xmlns="http://www.plcopen.org/xml/tc6_0201">
+  <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2023-09-14T08:06:45"/>
+  <contentHeader name="PlainProject" modificationDateTime="2023-09-14T08:09:26">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="0" y="0"/>
+      </fbd>
+      <ld>
+        <scaling x="0" y="0"/>
+      </ld>
+      <sfc>
+        <scaling x="0" y="0"/>
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="program0" pouType="program" globalId="69b30a31-fb8c-4391-8cbe-93e78a337d72">
+        <interface>
+          <localVars constant="false" retain="false" nonretain="false" persistent="false" nonpersistent="false">
+            <variable name="pv" globalId="UUID_840ad498-73e6-4557-b921-f664023ec7d1">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <documentation/>
+            </variable>
+            <variable name="sp" globalId="UUID_a707e968-3c0c-4c65-a1d1-7acc66fcc827">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <documentation/>
+            </variable>
+            <variable name="state" address="" globalId="UUID_77b82446-efff-47af-b58c-d6ce207aed61">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="inlet" address="%MW0.0.0.20" globalId="UUID_326f47b0-76d7-4e5d-8ba0-138498e21d32">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="outlet" address="%MW0.0.0.21" globalId="UUID_87812d20-01bf-4696-9530-6cc74159e0c0">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="level" address="%MW0.0.1.0" globalId="UUID_9b932a40-12b5-4bca-9af8-e957d336601e">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="Setpoint" address="" globalId="UUID_fb36f093-3c86-44ed-9990-22c1cc0b5c29">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="ValveButtonBoth" address="" globalId="UUID_b6fab220-ecfb-4f17-8f51-468fa8557152">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="statustank" address="%MW0.0.2.0" globalId="UUID_7961bd3c-9b6a-4d2e-ae2a-f352a2737461">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+            <variable name="tankstatus" address="" globalId="UUID_250e6f8d-fffa-4eeb-803e-de2a97b9a0a3">
+              <type>
+                <INT/>
+              </type>
+              <initialValue repetitionValue="1"/>
+              <addData/>
+              <documentation/>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p xmlns:xhtml="http://www.w3.org/1999/xhtml">pv := level;
+sp := Setpoint;
+tankstatus := statustank; (* 1=OK, 2=WARNING, 3=BROKEN *)
+
+if ValveButtonBoth then 
+state := 4;
+else
+if pv &gt;= 90 then
+state := 1; (* 0= HOLD,  1= DUMP (to not anger management), 2= DRAIN, 3:= FILL *) 
+elsif pv &gt; sp + 3 then
+state := 2;
+elsif pv &lt; sp - 3 then
+state :=3;
+else
+state :=0;
+end_if;
+end_if;
+
+CASE state OF 
+1: inlet := 0;
+   outlet := 99;
+2: inlet :=0;
+   outlet := 70;
+3: inlet :=50;
+   outlet:=0;
+4: inlet :=100;
+   outlet :=100; (* expect for the increase due to the tank behaviour *)
+0: inlet :=0;
+   outlet :=10; (* minimum amount of flow at all times*)
+end_case; 
+
+
+
+
+
+
+
+
+
+
+
+
+</xhtml:p>
+          </ST>
+        </body>
+        <documentation/>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="config" globalId="33cd9c52-3dde-4e5c-a127-d691e321863b">
+        <resource name="resource1">
+          <task name="task0" interval="T#20ms" priority="0">
+            <pouInstance name="instance0" typeName="program0"/>
+          </task>
+        </resource>
+      </configuration>
+    </configurations>
+  </instances>
+  <addData>
+    <data name="PROJECT_DOCS_ENSURED">true</data>
+    <data name="driver_4fbfe038-438e-4a77-be08-e629a9c3c2f3">{'name': 'modbus', 'configs': [{'clients': [{'confnode': {'Remote_IP_Address': '192.168.1.44', 'Configuration_Name': 'Modbus TCP Client ea6e84a5fa', 'Remote_Port_Number': 502, 'Request_Delay_in_ms': 20, 'Invocation_Rate_in_ms': 100}, 'requests': [{'symbols': [{'confnode': {'address': '%MW0.0.0.20'}, 'baseconfnode': {'Name': 'inlet', 'IEC_Channel': 20}}, {'confnode': {'address': '%MW0.0.0.21'}, 'baseconfnode': {'Name': 'outlet', 'IEC_Channel': 21}}], 'confnode': {'SlaveID': 1, 'Function': '16 - Write Multiple Registers', 'Start_Address': 20, 'Timeout_in_ms': 50, 'Nr_of_Channels': 2, 'Write_on_change': False}, 'baseconfnode': {'Name': 'request_6ddf', 'IEC_Channel': 0}}, {'symbols': [{'confnode': {'address': '%MW0.0.1.0'}, 'baseconfnode': {'Name': 'level', 'IEC_Channel': 0}}], 'confnode': {'SlaveID': 1, 'Function': '03 - Read Holding Registers', 'Start_Address': 0, 'Timeout_in_ms': 10, 'Nr_of_Channels': 1, 'Write_on_change': False}, 'baseconfnode': {'Name': 'request_b3b3', 'IEC_Channel': 1}}, {'symbols': [{'confnode': {'address': '%MW0.0.2.0'}, 'baseconfnode': {'Name': 'statustank', 'IEC_Channel': 0}}], 'confnode': {'SlaveID': 1, 'Function': '04 - Read Input Registers', 'Start_Address': 0, 'Timeout_in_ms': 10, 'Nr_of_Channels': 1, 'Write_on_change': False}, 'baseconfnode': {'Name': 'request_4f20', 'IEC_Channel': 2}}], 'baseconfnode': {'Name': 'TankSimClientServer', 'IEC_Channel': 0}}], 'servers': [], 'confnode': {'MaxRemoteTCPclients': 3}, 'baseconfnode': {'Name': 'modbus_0', 'IEC_Channel': 0}}], 'globalId': '4fbfe038-438e-4a77-be08-e629a9c3c2f3'}</data>
+    <data name="runtimeId">82901657-0843-41e6-8ddd-3305f56d2a77</data>
+  </addData>
+</project>
