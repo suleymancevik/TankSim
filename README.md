@@ -2,13 +2,11 @@
 
 # docker compose up --build -d
 
-#
-
-# 2) Point your OTee vPLC Modbus client to: HOST_IP:502 (Unit ID = 1)
+# 2)Point OTee vPLC Modbus client to: HOST_IP:502 (Unit ID = 1)
 
 # (HOST_IP is your machine’s IP on the same LAN; "localhost" from inside
 
-# your vPLC container/VM is NOT your host. Use the real IP or Docker alias.)
+# your vPLC container/VM is NOT your host. Use the real IP or Docker alias. if you host same network, can use localhost)
 
 #
 

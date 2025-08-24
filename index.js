@@ -2,11 +2,11 @@
 // 0 => 40001 Level% (0..100, int)
 // 20 => 40021 InletValveCmd (0..100, written by vPLC)
 // 21 => 40022 OutletValveCmd (0..100, written by vPLC)
+
 // (Optional) Input Register for status:
 // IR 0 => 30001 Status: 1=OK, 2=>90% high, 3=Broken (>100%)
-// Intentionally described fix values for inlet and otlet in case emergency (like emergncy stop) (iv-->0 ov-->99)
 
-import ModbusRTU from "modbus-serial";
+import ModbusRTU from "modbus-serial"; // which can be used for TCP because it includes tcp lib as well
 
 // ── Sim parameters (tune via env if you like) ───────────────────────────────
 const TICK_MS = parseInt(process.env.TICK_MS || "100", 10); // 100 ms
@@ -20,11 +20,9 @@ const PORT = parseInt(process.env.PORT || "502", 10); //
 const UNIT = parseInt(process.env.UNIT || "1", 10);
 
 // ── State ───────────────────────────────────────────────────────────────────
-let level = 50; // 0..100 (%), integer for simplicity
+let level = 0; // 0..100 (%), integer for simplicity
 let inletCmd = 0; // 0..100 (written by vPLC)
 let outletCmd = 0; // 0..100 (written by vPLC)
-const fixOutletCmd = 99; // for the peace of galaxy
-const fixInletCmd = 0; // for the peace of galaxy..
 let status = 1; // 1=OK, 2=>90% high, 3=Broken
 let broken = false; // if true, tank is broken and level stops updating
 
@@ -49,8 +47,6 @@ function step(dtSec) {
     level = 100;
   } else if (level > 90) {
     status = 2;
-    inletCmd = fixInletCmd;
-    outletCmd = fixOutletCmd;
   } else {
     status = 1;
   }
@@ -107,6 +103,7 @@ const server = new ModbusRTU.ServerTCP(vector, {
   port: PORT,
   unitID: UNIT,
 });
+
 server.on("socketError", (e) =>
   console.error("Modbus socket error:", e.message)
 );
