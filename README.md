@@ -1,5 +1,7 @@
 # 1) Build & run
 
+# git pull https://{githubrepo}/tanksim.git
+
 # docker compose up --build -d
 
 # 2)Point OTee vPLC Modbus client to: HOST_IP:502 (Unit ID = 1)
@@ -8,7 +10,6 @@
 
 # your vPLC container/VM is NOT your host. Use the real IP or Docker alias. if you host same network, can use localhost)
 
-#
 
 # 3) Register map (use Holding Registers / Function Code 3/6/16)
 
